@@ -10,6 +10,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -48,11 +49,36 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    public void submit (View v) {
+    public void search (View v) {
 
+        EditText text = (EditText) findViewById(R.id.searchKey);
+        String key = text.getText().toString();
+
+//        System.out.println (key);
+
+        if (!key.equals("")) {
+            ArrayList<Task> hits = new ArrayList<Task>();
+
+            for (Task x : tasks) {
+                if (x.getName().toLowerCase().contains(key.toLowerCase()) || x.getDescription().toLowerCase().contains(key.toLowerCase())) {
+                    hits.add(x);
+                }
+            }
+
+            System.out.println(hits);
+
+            adapter = new MyCustomAdapter(this, R.layout.task_info, hits);
+            listView.setAdapter(adapter);
+        }
+        else {
+            Toast.makeText(getApplicationContext(), "Please enter a valid search key", Toast.LENGTH_LONG).show();
+        }
     }
 
     public void clear (View v) {
+
+        EditText text = (EditText) findViewById(R.id.searchKey);
+        text.setText("");
         for (Task x: tasks) {
             x.setSelected(false);
         }
@@ -64,7 +90,7 @@ public class MainActivity extends AppCompatActivity {
         System.out.println ("here");
         //create Tasks
         //Task 1
-        Task exam = new Task ("CS 342 Take Home", "Make take home project application", "High");
+        Task exam = new Task ("CS 342 Take Home Exam", "Make take home project application", "High");
         list.add(exam);
 
         //Task 2
