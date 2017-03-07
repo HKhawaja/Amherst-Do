@@ -48,6 +48,18 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    public void submit (View v) {
+
+    }
+
+    public void clear (View v) {
+        for (Task x: tasks) {
+            x.setSelected(false);
+        }
+        adapter = new MyCustomAdapter(this, R.layout.task_info, tasks);
+        listView.setAdapter(adapter);
+    }
+
     public static ArrayList<Task> populate (ArrayList<Task> list) {
         System.out.println ("here");
         //create Tasks
@@ -130,6 +142,31 @@ public class MainActivity extends AppCompatActivity {
         public TextView getTextView() {return textView;}
     }
 
+    private class ClickBoxListener implements View.OnClickListener {
+
+        private TaskViewHolder holder;
+
+        public ClickBoxListener (TaskViewHolder holder) {
+            this.holder = holder;
+        }
+
+        @Override
+        public void onClick(View v) {
+            CheckBox cb = (CheckBox) v;
+            Task task = (Task) cb.getTag();
+            task.setSelected(cb.isChecked());
+
+            if (cb.isChecked()) {
+                TextView text = holder.getTextView();
+                text.setPaintFlags(text.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+            }
+            else {
+                TextView text = holder.getTextView();
+                text.setPaintFlags(text.getPaintFlags() & ~Paint.STRIKE_THRU_TEXT_FLAG);
+            }
+
+        }
+    }
     private class MyCustomAdapter extends ArrayAdapter<Task> {
 
         private ArrayList<Task> tasks;
@@ -163,23 +200,10 @@ public class MainActivity extends AppCompatActivity {
             convertView.setTag(holder);
 
             //add onCheckedListener here to each View Holder
-            holder.getCheckBox().setOnClickListener(new View.OnClickListener() {
-                public void onClick(View v) {
-                    CheckBox cb = (CheckBox) v;
-                    Task task = (Task) cb.getTag();
-                    task.setSelected(cb.isChecked());
+            holder.getCheckBox().setOnClickListener(new ClickBoxListener(holder));
 
-                    if (cb.isChecked()) {
-
-                        TextView text = (TextView) findViewById(R.id.taskName);
-                        text.setPaintFlags(text.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
-                    }
-                    else {
-                        TextView text = (TextView) findViewById(R.id.taskName);
-                        text.setPaintFlags(text.getPaintFlags() & ~Paint.STRIKE_THRU_TEXT_FLAG);
-                    }
-                }
-            });
+            //uncheck any selected checkboxes
+//            holder.getCheckBox().setSelected(false);
 
             // Tag the CheckBox with the Task it is displaying, so that we can
             // access the task in onClick() when the CheckBox is toggled.
@@ -193,4 +217,3 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 }
-
