@@ -1,2 +1,3 @@
 # Amherst-Do
-A basic to-do list for Amherst students.
+
+An Android application for a basic to-do list for Amherst students.
